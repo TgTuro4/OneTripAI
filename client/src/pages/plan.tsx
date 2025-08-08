@@ -1,5 +1,8 @@
 import { useState } from "react";
 
+// Get API base URL from environment variables
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+
 const PlanPage = () => {
   const [messages, setMessages] = useState([
     { id: 1, text: "Hello! Where would you like to go?", sender: "ai" },
@@ -18,7 +21,7 @@ const PlanPage = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch("http://localhost:3001/api/chat", {
+      const response = await fetch(`${API_BASE_URL}/api/chat`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

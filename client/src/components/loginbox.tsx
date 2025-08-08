@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import { app } from "../firebase";
+import { auth } from "../firebase";
 import {
   AuthErrorCodes,
-  connectAuthEmulator,
-  getAuth,
   signInWithEmailAndPassword,
   type AuthError,
 } from "firebase/auth";
@@ -15,8 +13,7 @@ export function Loginbox() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const auth = getAuth(app);
-  connectAuthEmulator(auth, "http://localhost:9099");
+  // Auth is now configured in firebase.ts
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,11 +26,7 @@ export function Loginbox() {
 
     // Call API
     try {
-      await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+      await signInWithEmailAndPassword(auth, email, password);
       navigate("/dashboard");
     } catch (error: unknown) {
       showLoginError(error as AuthError);

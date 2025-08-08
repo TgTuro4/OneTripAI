@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import { app } from "../firebase";
+import { auth } from "../firebase";
 import {
-  connectAuthEmulator,
   createUserWithEmailAndPassword,
-  getAuth,
   onAuthStateChanged,
 } from "firebase/auth";
 import { Link } from "react-router-dom";
@@ -14,8 +12,7 @@ export function Signupbox() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
 
-  const auth = getAuth(app);
-  connectAuthEmulator(auth, "http://localhost:9099");
+  // Auth is now configured in firebase.ts
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,25 +27,20 @@ export function Signupbox() {
       return;
     }
 
-    // TODO: Replace with your signup logic (API call, etc)
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      console.log("Signing up ", userCredential.user);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      console.log("User created:", userCredential.user);
       onAuthStateChanged(auth, (user) => {
         if (user) {
-          console.log(user);
-          setError("Logged in!");
+          setError("Account created successfully!");
         } else {
-          setError("Not logged in");
+          setError("Account creation failed");
         }
       });
-    } catch (error: unknown) {}
-    const signupInfo = { email, password };
-    console.log("Signing up:", signupInfo);
+    } catch (error: unknown) {
+      console.error("Signup error:", error);
+      setError("Failed to create account. Please try again.");
+    }
   };
 
   return (
